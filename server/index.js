@@ -1,9 +1,14 @@
 /* eslint-disable no-console */
 
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const express = require('express');
 const http = require('http');
 const { resolve } = require('path');
 const chalk = require('chalk');
+const { pool } = require('../db/config.js');
 
 const app = express();
 const server = http.createServer(app);
@@ -15,6 +20,20 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 app.use(express.static(resolve(__dirname, '../dist')));
+
+const getWords = (request, response) => {
+  pool.query('SELECT * FROM words', (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows);
+  });
+};
+
+app
+  .route('/words')
+  // GET endpoint
+  .get(getWords);
 
 app.get('/*', (req, res) => {
   res.sendFile(resolve(__dirname, '../dist/index.html'));
