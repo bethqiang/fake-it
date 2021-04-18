@@ -8,6 +8,10 @@ const express = require('express');
 const http = require('http');
 const { resolve } = require('path');
 const chalk = require('chalk');
+const socketio = require('socket.io');
+
+const socket = require('./socket');
+const { origin } = require('./utils');
 const { pool } = require('../db/config.js');
 
 const app = express();
@@ -18,6 +22,14 @@ if (process.env.NODE_ENV !== 'production') {
   const morgan = require('morgan'); /* eslint-disable-line */
   app.use(morgan('dev'));
 }
+
+const io = socketio(server, {
+  cors: {
+    origin,
+    methods: ['GET', 'POST'],
+  },
+});
+socket(io);
 
 app.use(express.static(resolve(__dirname, '../dist')));
 
