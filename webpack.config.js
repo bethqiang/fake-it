@@ -9,6 +9,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
+    publicPath: '/',
   },
   module: {
     rules: [
@@ -25,6 +26,7 @@ module.exports = {
   devtool: 'source-map',
   devServer: {
     contentBase: './dist',
+    historyApiFallback: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
